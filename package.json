@@ -9,8 +9,8 @@
     "fix": "eslint --fix ."
   },
   "pre-commit": [
-    "lint",
-    "fix"
+    "fix",
+    "lint"
   ],
   "repository": {
     "type": "git",
