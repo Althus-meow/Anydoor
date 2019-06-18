@@ -8,7 +8,10 @@
     "lint": "eslint .",
     "fix": "eslint --fix ."
   },
-  "pre-commit": [],
+  "pre-commit": [
+    "lint",
+    "fix"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Althus-meow/Anydoor.git"
