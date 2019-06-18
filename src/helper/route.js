@@ -25,7 +25,12 @@ module.exports = async function (req, res) {
       let files = await readdir(filePath);
       const dir = path.relative(basicConfig.root, filePath);
       const pageData = {
-        files,
+        files : files.map((file) => {
+          return {
+            file,
+            type : mime(file)
+          };
+        }),
         dir : dir? `/${dir}` : "",
         title : path.basename(filePath)
       };
