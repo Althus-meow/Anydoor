@@ -4,8 +4,11 @@
   "description": "My demo Node.js static resource server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "fix": "eslint --fix ."
   },
+  "pre-commit": [],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Althus-meow/Anydoor.git"
@@ -15,5 +18,12 @@
   "bugs": {
     "url": "https://github.com/Althus-meow/Anydoor/issues"
   },
-  "homepage": "https://github.com/Althus-meow/Anydoor#readme"
+  "homepage": "https://github.com/Althus-meow/Anydoor#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-session": "^1.16.1"
+  },
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  }
 }
