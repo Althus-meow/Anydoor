@@ -4,6 +4,7 @@ const basicConfig = require("../config/basicConfig");
 const handlebars = require("handlebars");
 const mime = require("../helper/mime");
 const compress = require("../helper/compress");
+const range = require("../helper/range");
 
 const { promisify } = require("util");
 const stat = promisify(fs.stat);
@@ -19,9 +20,16 @@ module.exports = async function (req, res) {
     const stats = await stat(filePath);
     if (stats.isFile()) {
       const contentType = mime(filePath);
-      res.statusCode = 200;
       res.setHeader("Content-Type", contentType);
-      let readStream = fs.createReadStream(filePath);
+
+      const {code, start, end} = range(stats.size, req, res);
+      let readStream;
+      if (code == 200){
+        res.statusCode = code;
+        readStream = fs.createReadStream(filePath);
+      } else {
+        readStream = fs.createReadStream(filePath, {start, end});
+      }
       if (filePath.match(basicConfig.compress)){
         readStream = compress(readStream, req, res);
       }
