@@ -5,6 +5,7 @@ const handlebars = require("handlebars");
 const mime = require("../helper/mime");
 const compress = require("../helper/compress");
 const range = require("../helper/range");
+const isFresh = require("../helper/cache");
 
 const { promisify } = require("util");
 const stat = promisify(fs.stat);
@@ -21,6 +22,12 @@ module.exports = async function (req, res) {
     if (stats.isFile()) {
       const contentType = mime(filePath);
       res.setHeader("Content-Type", contentType);
+
+      if (isFresh(stats, req, res)){
+        res.statusCode = 304;
+        res.end();
+        return;
+      }
 
       const {code, start, end} = range(stats.size, req, res);
       let readStream;
