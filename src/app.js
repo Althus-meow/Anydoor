@@ -3,11 +3,22 @@ const http = require("http");
 const basicConfig = require("./config/basicConfig");
 const route = require("./helper/route");
 
-const server = http.createServer((req, res) => {
-  route(req, res);
-});
+class MyServer {
 
-server.listen(basicConfig.port, basicConfig.hostname, () => {
-  const addr = `http://${basicConfig.hostname}:${basicConfig.port}`;
-  console.log(`Server start at ${addr}`);
-});
+  constructor(userConfig){
+    this.config = Object.assign({}, basicConfig, userConfig);
+  }
+
+  start(){
+    const server = http.createServer((req, res) => {
+      route(req, res, this.config);
+    });
+    
+    server.listen(this.config.port, this.config.hostname, () => {
+      const addr = `http://${this.config.hostname}:${this.config.port}`;
+      console.log(`Server start at ${addr}`);
+    });
+  }
+}
+
+module.exports = MyServer;

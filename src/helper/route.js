@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const basicConfig = require("../config/basicConfig");
 const handlebars = require("handlebars");
 const mime = require("../helper/mime");
 const compress = require("../helper/compress");
@@ -15,8 +14,8 @@ const readdir = promisify(fs.readdir);
 const dirTplPath = path.join(__dirname, "../templates/dir.tpl");
 const dirTpl = handlebars.compile(fs.readFileSync(dirTplPath, "utf-8"));
 
-module.exports = async function (req, res) {
-  const filePath = path.join(basicConfig.root, req.url);
+module.exports = async function (req, res, config) {
+  const filePath = path.join(config.root, req.url);
   try {
     const stats = await stat(filePath);
     if (stats.isFile()) {
@@ -37,13 +36,13 @@ module.exports = async function (req, res) {
       } else {
         readStream = fs.createReadStream(filePath, {start, end});
       }
-      if (filePath.match(basicConfig.compress)){
+      if (filePath.match(config.compress)){
         readStream = compress(readStream, req, res);
       }
       readStream.pipe(res);
     } else if (stats.isDirectory()) {
       let files = await readdir(filePath);
-      const dir = path.relative(basicConfig.root, filePath);
+      const dir = path.relative(config.root, filePath);
       const pageData = {
         files : files.map((file) => {
           return {

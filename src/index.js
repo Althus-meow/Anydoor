@@ -1,35 +1,27 @@
-var http = require("http");
-var querystring = require("querystring");
+const yargs = require("yargs");
+const MyServer = require("./app");
 
-var postHTML =
-  "<html><head><meta charset=\"utf-8\"><title>POST 实例</title></head>" +
-  "<body>" +
-  "<form method=\"post\">" +
-  "网站名： <input name=\"name\"><br>" +
-  "网站 URL： <input name=\"url\"><br>" +
-  "<input type=\"submit\">" +
-  "</form>" +
-  "</body></html>";
+const argv = yargs
+  .usage("anywhere [option]")
+  .option("p",{
+    alias : "port",
+    describe : "port number",
+    default : 9527
+  })
+  .option("h", {
+    alias : "hostname",
+    describe : "host name",
+    default : "127.0.0.1"
+  })
+  .option("d", {
+    alias : "root",
+    describe : "root dirctory",
+    default : process.cwd()
+  })
+  .version()
+  .alias("v", "version")
+  .help()
+  .argv;
 
-http.createServer(function (req, res) {
-  var body = "";
-
-  req.on("data", function (chunk) {
-    body += chunk;
-  });
-  req.on("end", function () {
-    // 解析参数
-    body = querystring.parse(body);
-    // 设置响应头部信息及编码
-    res.writeHead(200, { "Content-Type": "text/html; charset=utf8" });
-
-    if (body.name && body.url) { // 输出提交的数据
-      res.write("网站名：" + body.name);
-      res.write("<br>");
-      res.write("网站 URL：" + body.url);
-    } else {  // 输出表单
-      res.write(postHTML);
-    }
-    res.end();
-  });
-}).listen(3000);
+const server = new MyServer(argv);
+server.start();
